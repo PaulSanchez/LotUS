@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby -w
 
-require 'distribution.rb'
+require './distribution.rb'
 
 def test_distribution(x, p)
   puts "For x = " + x.inspect + " and p = " + p.inspect
   begin
     d = Distribution.new(x, p)
     printf "E[X] = %f\n", d.E
-    printf "E[X**2] = %f\n", d.E(lambda {|x| x * x})
+    printf "E[X**2] = %f\n", d.E(lambda {|value| value * value})
     printf "E[ln(X)] = %f\n", d.E(lambda {|value| Math.log(value)})
     printf "Var[X] = %f\n\n", d.variance
   rescue RuntimeError => my_error
