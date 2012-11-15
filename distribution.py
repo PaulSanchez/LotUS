@@ -51,7 +51,8 @@ class Distribution(object):
       The expected value of g(X).   
     """ 
     result = 0.0
-    for i in range(0, len(self.x)): result += g(self.x[i]) * self.p_values[i]
+    for i in range(0, len(self.x)):
+      result += g(self.x[i]) * self.p_values[i]
     return result
 
   def variance(self):
