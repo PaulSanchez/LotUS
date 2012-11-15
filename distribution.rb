@@ -34,14 +34,14 @@ class Distribution
   # to X, i.e., it calculates the mean of the distribution.
   def E(g = lambda {|x| x})   # default function is x itself, yielding E[X]
     result = 0.0
-    x.each_index {|i| result += g.call(@x[i]) * @p[i]}
+    x.each_index {|i| result += g[@x[i]] * @p[i]}
     return result
   end
 
   # Determine the variance of the distribtion.
   def variance
     square = lambda {|value| value * value}
-    E(square) - square.call(E())
+    E(square) - square[E()]
   end
 
 end
