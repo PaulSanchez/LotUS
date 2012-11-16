@@ -36,8 +36,11 @@ class Distribution(object):
       total_prob += p_values[i]
     if abs(1.0 - total_prob) > 1E-12:
       raise RuntimeError("p_values don't sum to 1.0")
-    self.x = tuple(x)
-    self.p_values = tuple(p_values)
+    self._x = tuple(x)
+    self._p_values = tuple(p_values)
+    self._mean = self.E()
+    square = lambda value: value * value
+    self._variance = self.E(square) - square(self.E())
 
   def E(self, g = lambda x: x):
     """Return the expected value of g(X) for this distribution.
@@ -51,11 +54,16 @@ class Distribution(object):
       The expected value of g(X).   
     """ 
     result = 0.0
-    for i in range(0, len(self.x)):
-      result += g(self.x[i]) * self.p_values[i]
+    for i in range(0, len(self._x)):
+      result += g(self._x[i]) * self._p_values[i]
     return result
 
+  @property
+  def mean(self):
+    """Return the mean of the distribution."""
+    return self._mean
+
+  @property
   def variance(self):
     """Return the variance of the distribution."""
-    square = lambda value: value * value
-    return self.E(square) - square(self.E())
+    return self._variance
