@@ -7,10 +7,10 @@ def test_distribution(x, p):
   print "For x =", x, "and p =", p
   try:
     d = Distribution(x, p)
-    print "E[X] =", d.E()
+    print "E[X] =", d.mean
     print "E[X**2] =", d.E(lambda value: value * value)
     print "E[ln(X)] =", d.E(lambda value: math.log(value))
-    print "Var[X] =", d.variance(), '\n'
+    print "Var[X] =", d.variance, '\n'
   except Exception, my_error:
     print my_error.message, '\n'
 
