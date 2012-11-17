@@ -13,23 +13,25 @@ class Distribution
   # Cached value for variance of the distribution
   attr_reader :variance
 
-  # Construct a distribution object with the specified vectors of x
-  # and p_values.  Both arrays must be the same length, the probabilities
+  # Construct a distribution object with the specified vectors of x_set
+  # and p_set.  Both arrays must be the same length, the probabilities
   # must sum to 1, and all p-values must be between 0 and 1.  Raises a
   # RuntimeException if any of these preconditions is violated.
-  def initialize(x, p_values)
-    raise "Array lengths must be the same" if x.length != p_values.length
+  def initialize(x_set, p_set)
+    raise "Array lengths must be the same" if x_set.length != p_set.length
     total_prob = 0.0
-    p_values.each do |p|
-      raise "p_values must be between 0.0 and 1.0" if p < 0.0 || p > 1.0 
-      total_prob += p
+    @p = {}   # use a hash to store p[x]
+    x_set.each_index do |i|
+      raise "Require 0.0 <= p <= 1.0" if p_set[i] < 0.0 || p_set[i] > 1.0
+      @p[x_set[i]] = p_set[i]
+      total_prob += p_set[i]
     end
-    raise "p-values don't sum to one." if (1.0 - total_prob).abs > 1E-12
+    raise "P-values don't sum to one." if (1.0 - total_prob).abs > 1E-12
     # freezing makes the object immutable, i.e., you can't alter @x and
     # @p after they've been validated, despite having access to their
     # references via attr_reader.
-    (@x = x.clone).freeze
-    (@p = p_values.clone).freeze
+    @x = x_set.clone.sort.freeze
+    @p.freeze
     @mean = E()
     square = lambda {|value| value * value}
     @variance = E(square) - square[@mean]
@@ -39,10 +41,8 @@ class Distribution
   # calculation of a function g(X) for the distribution.  If no
   # function g is supplied, it defaults to X, i.e., it calculates
   # E[X], the mean of the distribution.
-  def E(g = lambda {|x| x})   # default function is x itself, yielding E[X]
-    result = 0.0
-    x.each_index {|i| result += g[@x[i]] * @p[i]}
-    result
+  def E(g = lambda {|value| value})   # default function is x itself ==> E[X]
+    @x.inject(0.0) {|sum, current_x| sum + (g[current_x] * @p[current_x])}
   end
 
 end
