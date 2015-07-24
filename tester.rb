@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 
 require_relative './random_variable.rb'
-require_relative './rational_to_s.rb'     # to get desired .to_s behavior
+require_relative './patch_rational_to_s.rb'   # to get desired .to_s behavior
 
 def test_distribution(x, p)
   puts 'For x = ' + x.inspect + ' and p = ' + p.inspect
