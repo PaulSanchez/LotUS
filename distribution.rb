@@ -3,7 +3,6 @@
 # Represent a discrete probability distribution as a pair of
 # matched-length arrays.
 class Distribution
-  
   # The array of values - attr_reader gives a getter but not a setter
   attr_reader :x
   # The array of probabilities - attr_reader gives a getter but not a setter
@@ -18,22 +17,26 @@ class Distribution
   # must sum to 1, and all p-values must be between 0 and 1.  Raises a
   # RuntimeException if any of these preconditions is violated.
   def initialize(x_set, p_set)
-    raise "Array lengths must be the same" if x_set.length != p_set.length
-    total_prob = 0.0
-    @p = {}   # use a hash to store p[x]
-    x_set.each_index do |i|
-      raise "Require 0.0 <= p <= 1.0" if p_set[i] < 0.0 || p_set[i] > 1.0
-      @p[x_set[i]] = p_set[i]
-      total_prob += p_set[i]
+    unless x_set.length == p_set.length
+      fail 'x_set and p_set must be the same length'
     end
-    raise "P-values don't sum to one." if (1.0 - total_prob).abs > 1E-12
+    total_prob = 0r
+    @p = {}   # use a hash to store p[x]
+    @x = x_set.map(&:to_r)
+    @x.zip(p_set).each do |x_val, p_val|
+      p_val = p_val.to_r
+      fail 'P-values must be positive' unless p_val > 0
+      @p[x_val] = p_val
+      total_prob += p_val
+    end
+    fail "P-values don't sum to one." unless total_prob == 1
     # freezing makes the object immutable, i.e., you can't alter @x and
     # @p after they've been validated, despite having access to their
     # references via attr_reader.
-    @x = x_set.clone.sort.freeze
+    @x.sort!.freeze
     @p.freeze
     @mean = E()
-    square = lambda {|value| value * value}
+    square = ->(value) { value * value }
     @variance = E(square) - square[@mean]
   end
 
@@ -41,8 +44,7 @@ class Distribution
   # calculation of a function g(X) for the distribution.  If no
   # function g is supplied, it defaults to X, i.e., it calculates
   # E[X], the mean of the distribution.
-  def E(g = lambda {|value| value})   # default function is x itself ==> E[X]
-    @x.inject(0.0) {|sum, current_x| sum + (g[current_x] * @p[current_x])}
+  def E(g = ->(value) { value })   # default function is x itself ==> E[X]
+    @x.map { |x| g[x] * @p[x] }.inject(:+)   # sum g * p for all x
   end
-
 end
