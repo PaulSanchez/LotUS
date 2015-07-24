@@ -24,7 +24,7 @@ class RandomVariable
     @p = {}   # use a hash to store p[x]
     @x = []
     x_set.zip(p_set).each do |x_val, p_val|
-      fail 'Random Variables must be numeric' unless x_val.kind_of? Numeric
+      fail 'Random Variables must be numeric' unless x_val.is_a? Numeric
       @x << x_val.to_r
       p_val = p_val.to_r
       fail 'P-values must be positive numbers' unless p_val > 0
