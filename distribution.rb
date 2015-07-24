@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby -w
 
-# Represent a discrete probability distribution as a pair of
-# matched-length arrays.
-class Distribution
+# Represent a discrete random variable in terms of its probability
+# distribution, given as a pair of matched-length arrays.
+class RandomVariable
   # The array of values - attr_reader gives a getter but not a setter
   attr_reader :x
   # The array of probabilities - attr_reader gives a getter but not a setter
@@ -22,17 +22,17 @@ class Distribution
     end
     total_prob = 0r
     @p = {}   # use a hash to store p[x]
-    @x = x_set.map(&:to_r)
-    @x.zip(p_set).each do |x_val, p_val|
+    @x = []
+    x_set.zip(p_set).each do |x_val, p_val|
+      fail 'Random Variables must be numeric' unless x_val.kind_of? Numeric
+      @x << x_val.to_r
       p_val = p_val.to_r
-      fail 'P-values must be positive' unless p_val > 0
-      @p[x_val] = p_val
+      fail 'P-values must be positive numbers' unless p_val > 0
+      @p[@x.last] = p_val
       total_prob += p_val
     end
     fail "P-values don't sum to one." unless total_prob == 1
-    # freezing makes the object immutable, i.e., you can't alter @x and
-    # @p after they've been validated, despite having access to their
-    # references via attr_reader.
+    # Now that @x and @p have been validated, freeze'ing makes them immutable
     @x.sort!.freeze
     @p.freeze
     @mean = E()
