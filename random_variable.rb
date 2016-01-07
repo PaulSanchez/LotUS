@@ -21,7 +21,7 @@ class RandomVariable
       fail 'x_set and p_set must be the same length'
     end
     total_prob = 0r
-    @p = {}   # use a hash to store p[x]
+    @p = {} # use a hash to store p[x]
     @x = []
     x_set.zip(p_set).each do |x_val, p_val|
       fail 'Random Variables must be numeric' unless x_val.is_a? Numeric
@@ -44,7 +44,7 @@ class RandomVariable
   # calculation of a function g(X) for the distribution.  If no
   # function g is supplied, it defaults to X, i.e., it calculates
   # E[X], the mean of the distribution.
-  def E(g = ->(value) { value })   # default function is x itself ==> E[X]
-    @x.map { |x| g[x] * @p[x] }.inject(:+)   # sum g * p for all x
+  def E(g = ->(value) { value }) # default function is x itself ==> E[X]
+    @x.map { |x| g[x] * @p[x] }.inject(:+) # sum g * p for all x
   end
 end
