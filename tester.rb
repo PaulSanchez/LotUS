@@ -25,7 +25,7 @@ end
 test_distribution([1, 2, 3, 4], [0.4r, 0.3r, 0.2r, 0.1r])
 test_distribution([1, 2, 3, 4], [0.41r, 0.3r, 0.2r, 0.1r])
 test_distribution([1, 2, 3, 4, 5], [0.4r, 0.3r, 0.2r, 0.1r])
-test_distribution([1, 2, 3, 4], [1.4r, 0.3r, 0.2r, 0.1r])
+test_distribution([1, 2, 3, 4], [1.4r, -0.3r, 0.2r, -0.3r])
 p_die = 1 / 6r
 test_distribution([1, 2, 3, 4, 5, 6], [p_die] * 6)
 test_distribution([1, 3, 4, 5, 6], [p_die, p_die, p_die, 2 * p_die, p_die])

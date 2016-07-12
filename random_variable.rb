@@ -17,10 +17,8 @@ class RandomVariable
   # must sum to 1, and all p-values must be between 0 and 1.  Raises a
   # RuntimeException if any of these preconditions is violated.
   def initialize(x_set, p_set)
-    unless x_set.length == p_set.length
-      fail 'x_set and p_set must be the same length'
-    end
-    total_prob = 0r
+    fail 'x_set and p_set lengths differ' unless x_set.length == p_set.length
+    total_prob = Rational(0)
     @p = {} # use a hash to store p[x]
     @x = []
     x_set.zip(p_set).each do |x_val, p_val|
